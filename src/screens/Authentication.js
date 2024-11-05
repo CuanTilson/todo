@@ -16,6 +16,10 @@ export default function Authentication({ authenticationMode }) {
         event.preventDefault();
         try {
             if (authenticationMode === AuthenticationMode.Register) {
+                if (user.password.length < 8) {
+                    alert('Password must be at least 8 characters long.');
+                    return; // Prevent form submission
+                }
                 await signUp();
                 navigate('/signin');
             } else {
