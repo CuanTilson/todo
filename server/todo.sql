@@ -1,10 +1,9 @@
 drop table if exists task;
-
 drop table if exists account;
 
 create table account (
     id serial primary key,
-    email varchar(50) unique not null,
+    email varchar(255) unique not null,
     password varchar(255) not null
 );
 

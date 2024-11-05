@@ -1,32 +1,22 @@
 import fs from 'fs';
 import path from 'path';
 import { pool } from './db.js';
-import { hash } from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'; // Import jsonwebtoken as a default import
 
-const { sign } = jwt;
-const __dirname = path.resolve(); // Get the current directory
+const __dirname = path.resolve(); // Adjusted to get the current directory for ESM modules
 
-// Function to initialize the test database
+// Initialize the test database
 const initializeTestDb = async () => {
-    const sql = fs.readFileSync(path.resolve(__dirname, 'todo.sql'), 'utf8');
-    try {
-        await pool.query(sql);
-        console.log('Test database initialized successfully.');
-    } catch (error) {
-        console.error('Error initializing the test database:', error);
-    }
+    const sql = fs.readFileSync(path.resolve(__dirname, '../todo.sql'), 'utf-8');
+    await pool.query(sql); // Await the query to ensure it completes
+    console.log('Test database initialized successfully.');
 };
 
-// Function to insert a test user with hashed password
+// Insert a test user with a hashed password
 const insertTestUser = async (email, password) => {
     try {
-        const hashedPassword = await new Promise((resolve, reject) => {
-            hash(password, 10, (error, hashedPassword) => {
-                if (error) reject(error);
-                else resolve(hashedPassword);
-            });
-        });
+        const hashedPassword = await bcrypt.hash(password, 10); // Use bcrypt to hash the password
         await pool.query('INSERT INTO account (email, password) VALUES ($1, $2)', [email, hashedPassword]);
         console.log(`Test user ${email} inserted successfully.`);
     } catch (error) {
@@ -34,9 +24,8 @@ const insertTestUser = async (email, password) => {
     }
 };
 
-// Function to generate a token for a given email
 const getToken = (email) => {
-    return sign({ user: email }, process.env.JWT_SECRET);
-};
+    return jwt.sign({ user: email }, process.env.JWT_SECRET_KEY);
+}
 
 export { initializeTestDb, insertTestUser, getToken };

@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './index.css';
 import Home from './screens/Home.js';
-import { Authentication, AuthenticationMode } from './screens/Authentication';
+import Authentication, { AuthenticationMode } from './screens/Authentication.js';
 import ErrorPage from './screens/ErrorPage.js';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.js';
 import UserProvider from './context/UserProvider.js';
-import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -14,19 +14,19 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: '/signin',
-    element: <Authentication authenticationMode={AuthenticationMode.Login} />,
+    path: "/signin",
+    element: <Authentication authenticationMode={AuthenticationMode.Login} />
   },
   {
-    path: '/signup',
-    element: <Authentication authenticationMode={AuthenticationMode.Register} />,
+    path: "/signup",
+    element: <Authentication authenticationMode={AuthenticationMode.Register} />
   },
   {
     element: <ProtectedRoute />,
     children: [
       {
-        path: '/',
-        element: <Home />,
+        path: "/",
+        element: <Home />
       }
     ]
   }

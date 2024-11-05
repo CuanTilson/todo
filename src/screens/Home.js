@@ -1,8 +1,9 @@
-import './Home.css';
+// import logo from './logo.svg';
 import { useEffect, useState } from 'react';
-import { useUser } from '../context/useUser.js'; // Import the useUser hook
+import './Home.css';
 import Row from '../components/Row.js'; // Import the Row component
 import axios from 'axios';
+import { useUser } from '../context/useUser.js';
 
 const url = 'http://localhost:3001';
 
@@ -21,21 +22,19 @@ function Home() {
   }, []);
 
   const addTask = () => {
-    const headers = { headers: { Authorization: user.token } };
+    const headers = { headers: { Authorization: `Bearer ${user.token}` } };
 
-    axios.post(url + '/create', {
-      description: task
-    }, headers).then(response => {
-      setTasks([...tasks, { id: response.data.id, description: task }])
-      setTask('')
-    }).catch(error => {
-      alert(error.response.data.error ? error.response.data.error : error)
-    });
+    axios.post(url + '/create', { description: task }, headers)
+      .then(response => {
+        setTasks([...tasks, { id: response.data.id, description: task }])
+        setTask('')
+      }).catch(error => {
+        alert(error.response.data.error ? error.response.data.error : error)
+      });
   };
 
   const deleteTask = (id) => {
-    const headers = { headers: { Authorization: user.token } };
-
+    const headers = { headers: { Authorization: `Bearer ${user.token}` } };
     axios.delete(url + '/delete/' + id, headers)
       .then(response => {
         const withoutRemoved = tasks.filter((item) => item.id !== id)

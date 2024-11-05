@@ -8,12 +8,12 @@ export const AuthenticationMode = Object.freeze({
     Register: 'Register'
 });
 
-export const Authentication = ({ authenticationMode }) => {
-    const { user, setUser, signIn, signUp } = useUser();
+export default function Authentication({ authenticationMode }) {
+    const { user, setUser, signUp, signIn } = useUser();
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         try {
             if (authenticationMode === AuthenticationMode.Register) {
                 await signUp();
@@ -30,25 +30,27 @@ export const Authentication = ({ authenticationMode }) => {
 
     return (
         <div>
-            <h3>{authenticationMode === AuthenticationMode.Login ? 'Sign in' : 'Sign up'}</h3>
+            <h3>
+                {authenticationMode === AuthenticationMode.Login ? 'Sign in' : 'Sign up'}
+            </h3>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email</label>
-                    <input type="email" value={user.email} onChange={e => setUser({ ...user, email: e.target.value })} />
+                    <input type='email' value={user.email} onChange={e => setUser({ ...user, email: e.target.value })} />
                 </div>
                 <div>
                     <label>Password</label>
-                    <input type="password" value={user.password} onChange={e => setUser({ ...user, password: e.target.value })} />
+                    <input type='password' value={user.password} onChange={e => setUser({ ...user, password: e.target.value })} />
                 </div>
                 <div>
-                    <button>{authenticationMode === AuthenticationMode.Login ? 'Login' : 'Submit'}</button>
+                    <button>{authenticationMode === AuthenticationMode.Login ? 'Log in' : 'Submit'}</button>
                 </div>
                 <div>
-                    <Link>
+                    <Link to={authenticationMode === AuthenticationMode.Login ? '/signup' : '/signin'}>
                         {authenticationMode === AuthenticationMode.Login ? 'No account? Sign up' : 'Already signed up? Sign in'}
                     </Link>
                 </div>
             </form>
         </div>
-    );
+    )
 }

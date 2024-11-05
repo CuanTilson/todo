@@ -17,7 +17,7 @@ export default function UserProvider({ children }) {
         } catch (error) {
             throw error;
         }
-    };
+    }
 
     const signIn = async () => {
         const json = JSON.stringify(user);
@@ -25,7 +25,7 @@ export default function UserProvider({ children }) {
         try {
             const response = await axios.post(url + '/user/login', json, headers);
             const token = response.data.token;
-            setUser(response.data.user);
+            setUser(response.data);
             sessionStorage.setItem('user', JSON.stringify(response.data));
         } catch (error) {
             setUser({ email: '', password: '' });
@@ -37,5 +37,5 @@ export default function UserProvider({ children }) {
         <UserContext.Provider value={{ user, setUser, signUp, signIn }}>
             {children}
         </UserContext.Provider>
-    );
+    )
 }
