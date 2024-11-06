@@ -10,6 +10,22 @@ const router = Router();
 router.get('/', getTasks);
 router.post('/create', auth, postTask);
 
+router.delete('/delete/:id', auth, (req, res, next) => {
+    const id = parseInt(req.params.id);
+
+    pool.query('DELETE FROM task WHERE id = $1',
+        [id],
+        (error, result) => {
+            if (error) {
+                return next(error);
+            }
+            return res.status(200).json({ id: id });
+        }
+    );
+});
+
+export default router;
+
 // router.get('/', (req, res, next) => {
 //     pool.query('SELECT * FROM task', (error, result) => {
 //         if (error) {
@@ -30,19 +46,3 @@ router.post('/create', auth, postTask);
 //         }
 //     );
 // });
-
-router.delete('/delete/:id', auth, (req, res, next) => {
-    const id = parseInt(req.params.id);
-
-    pool.query('DELETE FROM task WHERE id = $1',
-        [id],
-        (error, result) => {
-            if (error) {
-                return next(error);
-            }
-            return res.status(200).json({ id: id });
-        }
-    );
-});
-
-export default router;
