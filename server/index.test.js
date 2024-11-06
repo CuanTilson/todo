@@ -1,3 +1,5 @@
+/* eslint-disable jest/valid-expect */
+/* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
 import { before } from 'mocha';
 import { initializeTestDb, insertTestUser, getToken } from './helper/test.js';
@@ -22,38 +24,11 @@ describe('GET Tasks', () => {
     });
 });
 
-describe('DELETE task', () => {
-    const token = `Bearer ${getToken('login@foo.com')}`;
-
-    it('should delete a task', async () => {
-        const response = await fetch(base_url + '/delete/1', {
-            method: 'delete',
-            headers: {
-                Authorization: token
-            }
-        });
-        const data = await response.json();
-        expect(response.status).to.equal(200, data.error);
-        expect(data).to.be.an('object');
-        expect(data).to.include.all.keys('id');
-    });
-
-    it('should not delete a task with SQL injection', async () => {
-        const response = await fetch(base_url + '/delete/id=0 or id > 0', {
-            method: 'delete',
-            headers: {
-                Authorization: token
-            }
-        });
-        const data = await response.json();
-        expect(response.status).to.equal(500, data.error);
-        expect(data).to.be.an('object');
-        expect(data).to.include.all.keys('error');
-    });
-});
-
 describe('POST task', () => {
-    const token = `Bearer ${getToken('login@foo.com')}`;
+    const email = 'post@foo.com'
+    const password = 'post123'
+    insertTestUser(email, password)
+    const token = getToken(email)
 
     it('should post a task', async () => {
         const response = await fetch(base_url + '/create', {
@@ -101,9 +76,41 @@ describe('POST task', () => {
     });
 });
 
+describe('DELETE task', () => {
+    const email = 'delete@foo.com'
+    const password = 'delete123'
+    insertTestUser(email, password)
+    const token = getToken(email)
+
+    it('should delete a task', async () => {
+        const response = await fetch(base_url + '/delete/1', {
+            method: 'delete',
+            headers: {
+                Authorization: token
+            }
+        });
+        const data = await response.json();
+        expect(response.status).to.equal(200, data.error);
+        expect(data).to.be.an('object');
+        expect(data).to.include.all.keys('id');
+    });
+
+    it('should not delete a task with SQL injection', async () => {
+        const response = await fetch(base_url + '/delete/id=0 or id > 0', {
+            method: 'delete',
+            headers: {
+                Authorization: token
+            }
+        });
+        const data = await response.json();
+        expect(response.status).to.equal(500, data.error);
+        expect(data).to.be.an('object');
+        expect(data).to.include.all.keys('error');
+    });
+});
+
 describe('POST register', () => {
-    // Register random user for testing
-    const email = 'test' + Math.floor(Math.random() * 1000) + '@foo.com';
+    const email = 'register@foo.com';
     const password = 'register123';
 
     it('should register with valid email and password', async () => {
@@ -138,9 +145,9 @@ describe('POST register', () => {
 });
 
 describe('POST login', () => {
-    const email = 'login123@foo.com';
-    const password = 'login123';
-    insertTestUser(email, password);
+    const email = 'login@foo.com'
+    const password = 'login123'
+    insertTestUser(email, password)
 
     it('should login with valid credentials', async () => {
         const response = await fetch(base_url + '/user/login', {
