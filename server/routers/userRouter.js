@@ -10,6 +10,8 @@ const router = Router();
 router.post('/register', postRegistration);
 router.post('/login', postLogin);
 
+export default router;
+
 // router.post('/register', async (req, res, next) => {
 //     hash(req.body.password, 10, (error, hashedPassword) => {
 //         if (error) next(error);
@@ -54,5 +56,3 @@ router.post('/login', postLogin);
 //         return next(error);
 //     }
 // })
-
-export default router;
