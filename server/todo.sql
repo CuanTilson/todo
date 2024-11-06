@@ -14,4 +14,3 @@ create table task (
 
 insert into task (description) values ('My test task');
 insert into task (description) values ('My second test task');
-insert into account (email, password) values ('login@foo.com', 'login123');
