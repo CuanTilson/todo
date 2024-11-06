@@ -4,15 +4,14 @@ const authorizationRequired = "Authorization required";
 const invalidCredentials = "Invalid credentials";
 
 const auth = async (req, res, next) => {
-    const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!req.headers.authorization) {
         res.statusMessage = authorizationRequired;
         return res.status(401).json({ message: authorizationRequired });
     }
 
-    const token = authHeader.split(" ")[1]; // Extract the token part after "Bearer "
     try {
+        const token = req.headers.authorization;
         jwt.verify(token, process.env.JWT_SECRET_KEY);
         next();
     } catch (err) {
